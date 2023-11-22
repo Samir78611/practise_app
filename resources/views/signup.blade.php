@@ -24,6 +24,9 @@
     <label for="">Middle Name:</label>
     <input type="text" id="mname" name="mname" placeholder="Middle Name" value="{{old('name')}}" required>
     <br>
+    <label for="">Grandfather Name:</label>
+    <input type="text" id="gname" name="gname" placeholder="Grandfather Name" value="{{old('name')}}" required>
+    <br>
     <label for="">Last Name:</label>
     <input type="text" id="lname" name="lname" placeholder="Last Name"value="{{old('lname')}}"required>
     <br>
