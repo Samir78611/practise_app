@@ -36,10 +36,12 @@ class CarsController extends Controller
         $color=$request->input('color');
 
         $image=$request->file('image');
+        
         $image_new_name= time().'.'.$image->getClientOriginalExtension();
 
         $image->move(public_path('uploads'),$image_new_name);
 
+        
         $pdf=$request->file('pdf');
         $pdf_new_name=time().'.'.$pdf->getClientOriginalExtension();
         $pdf->move(public_path('downloads'),$pdf_new_name);
@@ -73,6 +75,7 @@ class CarsController extends Controller
         $price=$request->input('price');
         $color=$request->input('color');
         $image=$request->file('image');
+        $url=$request->input('url');
         if($image!=""){
             $image_new_name= time().'.'.$image->getClientOriginalExtension();
             $image->move(public_path('uploads'),$image_new_name);
@@ -94,7 +97,7 @@ class CarsController extends Controller
 
         $updated_at= date("Y-m-d h:i:s");
 
-        $update_cars=DB::update("CALL update_cars(?,?,?,?,?,?,?,?,?)", array($id,$car,$model,$milege,$price,$color,$image_new_name,$pdf_new_name,$updated_at));
+        $update_cars=DB::update("CALL update_cars(?,?,?,?,?,?,?,?,?,?)", array($id,$car,$model,$milege,$price,$color,$image_new_name,$url,$pdf_new_name,$updated_at));
         if($updated_at){
             return redirect(url('cars'))->with('success','Your Car is updated');
         }else{
