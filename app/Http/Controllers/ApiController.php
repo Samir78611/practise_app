@@ -6,8 +6,8 @@ use DB;
 use Hash;
 use Illuminate\Http\Request;
 use Str;
+use Twilio\Rest\Client;
 use Validator;
-use Twilio\Rest\Client;             
 
 class ApiController extends Controller
 {
@@ -68,6 +68,14 @@ class ApiController extends Controller
         }
         $final_data = $final_car_data;
 
+        //send sms
+        $country_code=91;
+        $mobile_no=9325706639;
+        $message = "someone has checking your cars collection ";
+        $send_sms = $this->SendSMS($country_code, $mobile_no, $message);
+
+        //send sms end 
+
         $data['message'] = 200;
         $data['status'] = "success";
         $data['data'] = $final_data;
@@ -108,17 +116,25 @@ class ApiController extends Controller
             $mobile_no = $request->input('mobile_no');
             $date_of_birth = $request->input('date_of_birth');
             $adhaar_no = $request->input('adhaar_no');
+            $country_code=$request->input('country_code');
 
             $created_at = date("Y-m-d h:i:s");
             $updated_at = date("Y-m-d h:i:s");
 
-            $insert_user = DB::insert("CALL registration(?,?,?,?,?,?,?,?,?,?,?,?)", array($fname, $lname, $email, $password, $gender, $religion, $hobbies_user, $mobile_no, $date_of_birth, $adhaar_no, $created_at, $updated_at));
+            $insert_user = DB::insert("CALL registration(?,?,?,?,?,?,?,?,?,?,?,?,?)", array($fname, $lname, $email, $password, $gender, $religion, $hobbies_user, $mobile_no, $date_of_birth, $adhaar_no,$country_code, $created_at, $updated_at));
             if ($insert_user) {
+
+                //send sms
+                $message = "Hii,".$fname." Your signup was successful";
+                $send_sms = $this->SendSMS($country_code, $mobile_no, $message);
+
+                //send sms end 
+
                 $data['status'] = 200;
                 $data['message'] = "signup successful";
                 $data['data'] = "";
             } else {
-                $data['status'] = 200;
+                $data['status'] = 400;
                 $data['message'] = "signup unsuccessfully";
                 $data['data'] = "";
             }
@@ -153,18 +169,18 @@ class ApiController extends Controller
 
             // third party api start
 
-                $sid    = "ACf891900f5401085e30a7572b305fa59c";
-                $token  = "733866822f57af3761b809a12b8efbab";
-                $twilio = new Client($sid, $token);
+            $sid = "ACf891900f5401085e30a7572b305fa59c";
+            $token = "733866822f57af3761b809a12b8efbab";
+            $twilio = new Client($sid, $token);
 
-                $message = $twilio->messages
-                ->create("+".$countryCode.$mobileNo, // to
+            $message = $twilio->messages
+                ->create("+" . $countryCode . $mobileNo, // to
                     array(
-                    "from" => "+15014833433",
-                    "body" => "Hiii sam gym your otp is" .$otp
+                        "from" => "+15014833433",
+                        "body" => "Hiii sam gym your otp is" . $otp,
                     )
                 );
-            // third party api end 
+            // third party api end
             $created_at = date("Y-m-d h:i:s");
             $updated_at = date("Y-m-d h:i:s");
 
@@ -213,10 +229,10 @@ class ApiController extends Controller
             $updated_at = date("Y-m-d h:i:s");
 
             $verify_otp = DB::select("CALL verify_otp(?,?)", array($otp, $otp_token));
-            if(count($verify_otp)>0){
+            if (count($verify_otp) > 0) {
 
                 $update_verified_otp = DB::update("CALL update_verified_otp(?,?,?)", array($otp, $otp_token, $updated_at));
-                if($update_verified_otp) {
+                if ($update_verified_otp) {
 
                     $data['status'] = 200;
                     $data['messages'] = "OTP successfully verified";
@@ -234,4 +250,22 @@ class ApiController extends Controller
         }
         return response()->json($data);
     }
+    public function SendSMS($countryCode, $mobileNo, $message)
+    {
+        // third party api start
+
+        $sid = "ACf891900f5401085e30a7572b305fa59c";
+        $token = "b4721071ca707433739eb6b169290f52";
+        $twilio = new Client($sid, $token);
+
+        $message = $twilio->messages
+            ->create("+" . $countryCode . $mobileNo, // to
+                array(
+                    "from" => "+15014833433",
+                    "body" => $message,
+                )
+            );
+        // third party api end
+    }
+
 }
