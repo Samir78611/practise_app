@@ -7,6 +7,7 @@ use Hash;
 use Illuminate\Http\Request;
 use Str;
 use Validator;
+use Twilio\Rest\Client;             
 
 class ApiController extends Controller
 {
@@ -149,6 +150,21 @@ class ApiController extends Controller
             $mobileNo = $request->input('mobileNo');
             $otp = rand(100000, 999999); //for 6 digit otp
             $otp_token = Str::random(15);
+
+            // third party api start
+
+                $sid    = "ACf891900f5401085e30a7572b305fa59c";
+                $token  = "733866822f57af3761b809a12b8efbab";
+                $twilio = new Client($sid, $token);
+
+                $message = $twilio->messages
+                ->create("+".$countryCode.$mobileNo, // to
+                    array(
+                    "from" => "+15014833433",
+                    "body" => "Hiii sam gym your otp is" .$otp
+                    )
+                );
+            // third party api end 
             $created_at = date("Y-m-d h:i:s");
             $updated_at = date("Y-m-d h:i:s");
 
