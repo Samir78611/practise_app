@@ -87,7 +87,7 @@ class ApiController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'lname' => 'required',
-            'email' => 'required|unique:users,email',
+            'email' => 'required|unique:users,email',//unique condition is an show that your email is already used|
             'mobile_no' => 'required|integer|min:10',
             'adhaar_no' => 'required|integer|min:12',
         ]);
