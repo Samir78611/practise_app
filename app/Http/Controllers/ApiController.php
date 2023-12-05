@@ -167,10 +167,10 @@ class ApiController extends Controller
             $otp = rand(100000, 999999); //for 6 digit otp
             $otp_token = Str::random(15);
 
+            try{
             // third party api start
-
-            $sid = "ACf891900f5401085e30a7572b305fa59c";
-            $token = "733866822f57af3761b809a12b8efbab";
+            $sid = env('TWILIO_SID');
+            $token = env('TWILIO_AUTH_TOKEN');
             $twilio = new Client($sid, $token);
 
             $message = $twilio->messages
@@ -181,6 +181,10 @@ class ApiController extends Controller
                     )
                 );
             // third party api end
+            }catch (\Exception $e) {
+                
+            }
+
             $created_at = date("Y-m-d h:i:s");
             $updated_at = date("Y-m-d h:i:s");
 
