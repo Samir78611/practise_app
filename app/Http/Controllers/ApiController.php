@@ -118,7 +118,7 @@ class ApiController extends Controller
             $adhaar_no = $request->input('adhaar_no');
             $country_code=$request->input('country_code');
 
-            $created_at = date("Y-m-d h:i:s");
+            $created_at = date("Y-m-d h:i:s");            
             $updated_at = date("Y-m-d h:i:s");
 
             $insert_user = DB::insert("CALL registration(?,?,?,?,?,?,?,?,?,?,?,?,?)", array($fname, $lname, $email, $password, $gender, $religion, $hobbies_user, $mobile_no, $date_of_birth, $adhaar_no,$country_code, $created_at, $updated_at));
