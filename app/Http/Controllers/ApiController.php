@@ -69,12 +69,12 @@ class ApiController extends Controller
         $final_data = $final_car_data;
 
         //send sms
-        $country_code=91;
-        $mobile_no=9325706639;
+        $country_code = 91;
+        $mobile_no = 9325706639;
         $message = "someone has checking your cars collection ";
         $send_sms = $this->SendSMS($country_code, $mobile_no, $message);
 
-        //send sms end 
+        //send sms end
 
         $data['message'] = 200;
         $data['status'] = "success";
@@ -87,7 +87,7 @@ class ApiController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'lname' => 'required',
-            'email' => 'required|unique:users,email',//unique condition is an show that your email is already used|
+            'email' => 'required', //unique condition is an show that your email is already used|
             'mobile_no' => 'required|integer|min:10',
             'adhaar_no' => 'required|integer|min:12',
         ]);
@@ -116,19 +116,23 @@ class ApiController extends Controller
             $mobile_no = $request->input('mobile_no');
             $date_of_birth = $request->input('date_of_birth');
             $adhaar_no = $request->input('adhaar_no');
-            $country_code=$request->input('country_code');
+            $country_code = $request->input('country_code');
 
-            $created_at = date("Y-m-d h:i:s");            
+            $created_at = date("Y-m-d h:i:s");
             $updated_at = date("Y-m-d h:i:s");
 
-            $insert_user = DB::insert("CALL registration(?,?,?,?,?,?,?,?,?,?,?,?,?)", array($fname, $lname, $email, $password, $gender, $religion, $hobbies_user, $mobile_no, $date_of_birth, $adhaar_no,$country_code, $created_at, $updated_at));
+            $insert_user = DB::insert("CALL registration(?,?,?,?,?,?,?,?,?,?,?,?,?)", array($fname, $lname, $email, $password, $gender, $religion, $hobbies_user, $mobile_no, $date_of_birth, $adhaar_no, $country_code, $created_at, $updated_at));
             if ($insert_user) {
 
-                //send sms
-                $message = "Hii,".$fname." Your signup was successful";
-                $send_sms = $this->SendSMS($country_code, $mobile_no, $message);
+                //send sms/email
+                $reciverEmail = $email;
+                $reciverName = $fname;
+                $subject = "Hiii";
+                $body = "<h4 style=color:green>Welcome to our new page</h4>" .$email;
+                
+                $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
 
-                //send sms end 
+                //send sms/email
 
                 $data['status'] = 200;
                 $data['message'] = "signup successful";
@@ -167,22 +171,22 @@ class ApiController extends Controller
             $otp = rand(100000, 999999); //for 6 digit otp
             $otp_token = Str::random(15);
 
-            try{
-            // third party api start
-            $sid = env('TWILIO_SID');
-            $token = env('TWILIO_AUTH_TOKEN');
-            $twilio = new Client($sid, $token);
+            try {
+                // third party api start
+                $sid = env('TWILIO_SID');
+                $token = env('TWILIO_AUTH_TOKEN');
+                $twilio = new Client($sid, $token);
 
-            $message = $twilio->messages
-                ->create("+" . $countryCode . $mobileNo, // to
-                    array(
-                        "from" => "+15014833433",
-                        "body" => "Hiii sam gym your otp is" . $otp,
-                    )
-                );
-            // third party api end
-            }catch (\Exception $e) {
-                
+                $message = $twilio->messages
+                    ->create("+" . $countryCode . $mobileNo, // to
+                        array(
+                            "from" => "+15014833433",
+                            "body" => "Hiii sam gym your otp is" . $otp,
+                        )
+                    );
+                // third party api end
+            } catch (\Exception $e) {
+
             }
 
             $created_at = date("Y-m-d h:i:s");
@@ -271,5 +275,60 @@ class ApiController extends Controller
             );
         // third party api end
     }
+
+    public function SendEmail($reciverEmail, $reciverName, $subject, $body)
+{
+    $curl = curl_init();
+
+    // Construct the payload as an associative array
+    $data = [
+        "sender" => [
+            "name" => env('BREVO_EMAIL_NAME'),
+            "email" => env('BREVO_EMAIL_SENDER'),
+        ],
+        "to" => [
+            [
+                "email" => $reciverEmail,
+                "name" => $reciverName,
+            ]
+        ],
+        "subject" => $subject,  // Use the parameter instead of hardcoded value
+        "htmlContent" => $body, // Use the parameter instead of hardcoded value
+    ];
+
+    // Convert the array to a JSON string
+    $jsonData = json_encode($data);
+
+    // Set the cURL options
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.brevo.com/v3/smtp/email',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => $jsonData,
+        CURLOPT_HTTPHEADER => array(
+            'accept: application/json',
+            'api-key: ' . env('BREVO_EMAIL_APIKEY'),
+            'content-type: application/json',
+            'Cookie: __cf_bm=LJZi4.rQhrJ8BqbOfOE2Gg.cGoyQFUv8PemxHPQUZ94-1701921296-0-AewKvBE3buHmY1Anp593KmncH8u4k6fIv4UTpWe2sjm1QrWQZEWfCzAupRpFqI6MSdv6JNtRR1VKQEuHBmvxi1k='
+        ),
+    ));
+
+    // Execute the cURL request
+    $response = curl_exec($curl);
+
+    // Check for cURL errors
+    if (curl_errno($curl))
+
+    // Close the cURL session
+    curl_close($curl);
+
+    // Output the response
+    dd($response);
+}
 
 }
