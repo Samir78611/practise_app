@@ -28,6 +28,7 @@ class OfferController extends Controller
         $users_data = DB::select("CALL get_all_users_data");
         foreach ($users_data as $user) {
             $user_email=$user->email;
+            
             $user_name=$user->name;
 
             $reciverEmail = $user_email;
