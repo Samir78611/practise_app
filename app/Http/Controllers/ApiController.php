@@ -128,8 +128,8 @@ class ApiController extends Controller
                 $reciverEmail = $email;
                 $reciverName = $fname;
                 $subject = "Hiii";
-                $body = "<h4 style=color:green>Welcome to our new page</h4>" .$email;
-                
+                $body = "<h4 style=color:green>Welcome to our new page</h4>" . $email;
+
                 $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
 
                 //send sms/email
@@ -277,58 +277,68 @@ class ApiController extends Controller
     }
 
     public function SendEmail($reciverEmail, $reciverName, $subject, $body)
-{
-    $curl = curl_init();
+    {
+        $curl = curl_init();
 
-    // Construct the payload as an associative array
-    $data = [
-        "sender" => [
-            "name" => env('BREVO_EMAIL_NAME'),
-            "email" => env('BREVO_EMAIL_SENDER'),
-        ],
-        "to" => [
-            [
-                "email" => $reciverEmail,
-                "name" => $reciverName,
-            ]
-        ],
-        "subject" => $subject,  // Use the parameter instead of hardcoded value
-        "htmlContent" => $body, // Use the parameter instead of hardcoded value
-    ];
+        // Construct the payload as an associative array
+        $data = [
+            "sender" => [
+                "name" => env('BREVO_EMAIL_NAME'),
+                "email" => env('BREVO_EMAIL_SENDER'),
+            ],
+            "to" => [
+                [
+                    "email" => $reciverEmail,
+                    "name" => $reciverName,
+                ],
+            ],
+            "subject" => $subject, // Use the parameter instead of hardcoded value
+            "htmlContent" => $body, // Use the parameter instead of hardcoded value
+        ];
 
-    // Convert the array to a JSON string
-    $jsonData = json_encode($data);
+        // Convert the array to a JSON string
+        $jsonData = json_encode($data);
 
-    // Set the cURL options
-    curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.brevo.com/v3/smtp/email',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => $jsonData,
-        CURLOPT_HTTPHEADER => array(
-            'accept: application/json',
-            'api-key: ' . env('BREVO_EMAIL_APIKEY'),
-            'content-type: application/json',
-            'Cookie: __cf_bm=LJZi4.rQhrJ8BqbOfOE2Gg.cGoyQFUv8PemxHPQUZ94-1701921296-0-AewKvBE3buHmY1Anp593KmncH8u4k6fIv4UTpWe2sjm1QrWQZEWfCzAupRpFqI6MSdv6JNtRR1VKQEuHBmvxi1k='
-        ),
-    ));
+        // Set the cURL options
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.brevo.com/v3/smtp/email',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $jsonData,
+            CURLOPT_HTTPHEADER => array(
+                'accept: application/json',
+                'api-key: ' . env('BREVO_EMAIL_APIKEY'),
+                'content-type: application/json',
+                'Cookie: __cf_bm=LJZi4.rQhrJ8BqbOfOE2Gg.cGoyQFUv8PemxHPQUZ94-1701921296-0-AewKvBE3buHmY1Anp593KmncH8u4k6fIv4UTpWe2sjm1QrWQZEWfCzAupRpFqI6MSdv6JNtRR1VKQEuHBmvxi1k=',
+            ),
+        ));
 
-    // Execute the cURL request
-    $response = curl_exec($curl);
+        // Execute the cURL request
+        $response = curl_exec($curl);
 
-    // Check for cURL errors
-    if (curl_errno($curl))
+        // Check for cURL errors
+        if (curl_errno($curl)) {
+            echo 'Curl error: ' . curl_error($curl);
+        }
 
-    // Close the cURL session
-    curl_close($curl);
+        // Close the cURL session
+        curl_close($curl);
 
-    // Output the response
-    dd($response);
-}
+        //handle this all situation that you need
+        $decode = json_decode($response);
+        $messageId = $decode->messageId;
+        $created_at = date("Y-m-d h:i:s");
+        $updated_at = date("Y-m-d h:i:s");
+
+        $email_log=DB::insert("CALL email_log(?,?,?)", array($messageId,$created_at,$updated_at));
+
+        // Output the response
+        // dd($response);
+    }
 
 }
