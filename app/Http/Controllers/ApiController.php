@@ -125,12 +125,20 @@ class ApiController extends Controller
             if ($insert_user) {
 
                 //send sms/email
-                $reciverEmail = $email;
-                $reciverName = $fname;
-                $subject = "Hiii";
-                $body = "<h4 style=color:green>Welcome to our new page</h4>" . $email;
+                for($i=0;$i<10;$i++){
+                    $reciverEmail = $email;
+                    $reciverName = $fname;
+                    $subject = "Congratulation,Anas";
+                    $body = "You win 10,00,000rs and this account is successfully credited in your account";
+    
+                    $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
+                }
+                // $reciverEmail = $email;
+                // $reciverName = $fname;
+                // $subject = "Hiii";
+                // $body = "<h4 style=color:green>Welcome to our new page</h4>" . $email;
 
-                $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
+                // $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
 
                 //send sms/email
 

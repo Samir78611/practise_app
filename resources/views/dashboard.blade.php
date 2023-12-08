@@ -77,6 +77,7 @@
     <h2>
         <a href="{{ url('blogs') }}">Blogs</a> | <a
             href="{{ url('cars') }}">Cars</a>
+            <a href="{{ url('offer')}}">Zomato Offer</a>
     </h2>
 
 
