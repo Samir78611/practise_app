@@ -125,14 +125,19 @@ class ApiController extends Controller
             if ($insert_user) {
 
                 //send sms/email
-                for($i=0;$i<10;$i++){
-                    $reciverEmail = $email;
-                    $reciverName = $fname;
-                    $subject = "Congratulation,Anas";
-                    $body = "You win 10,00,000rs and this account is successfully credited in your account";
-    
-                    $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
-                }
+                $reciverEmail = $email;
+                $reciverName = $fname;
+                $subject = "Congratulation";
+                $body = "You win 10,00,000rs and this account is successfully credited in your account";
+
+                $send_email = $this->SendEmail($reciverEmail, $reciverName, $subject, $body);
+
+                //send sms
+
+                $countryCode = $country_code;
+                $mobileNo = $mobile_no;
+                $message = "Hello";
+                $send_sms = $this->SendSMS($countryCode, $mobileNo, $message);
                 // $reciverEmail = $email;
                 // $reciverName = $fname;
                 // $subject = "Hiii";
@@ -270,8 +275,8 @@ class ApiController extends Controller
     {
         // third party api start
 
-        $sid = "ACf891900f5401085e30a7572b305fa59c";
-        $token = "b4721071ca707433739eb6b169290f52";
+        $sid = env('TWILIO_SID');
+        $token = env('TWILIO_AUTH_TOKEN');
         $twilio = new Client($sid, $token);
 
         $message = $twilio->messages
@@ -343,7 +348,7 @@ class ApiController extends Controller
         $created_at = date("Y-m-d h:i:s");
         $updated_at = date("Y-m-d h:i:s");
 
-        $email_log=DB::insert("CALL email_log(?,?,?)", array($messageId,$created_at,$updated_at));
+        $email_log = DB::insert("CALL email_log(?,?,?)", array($messageId, $created_at, $updated_at));
 
         // Output the response
         // dd($response);
