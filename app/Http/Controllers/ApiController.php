@@ -353,7 +353,8 @@ class ApiController extends Controller
         // Output the response
         // dd($response);
     }
-    public function ImportColors(Request $request){
+    public function ImportColors(Request $request)
+    {
         $validator = Validator::make($request->all(), [
 
         ]);
@@ -371,42 +372,41 @@ class ApiController extends Controller
             $data['data'] = (object) [];
 
         } else {
-            //main logic 
+            //main logic
 
-        $curl = curl_init();
+            $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://reqres.in/api/unknown',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => 'https://reqres.in/api/unknown',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
 
-        $response = curl_exec($curl);
+            $response = curl_exec($curl);
 
-        curl_close($curl);
-        $decode=json_decode($response);
-        $colors=$decode->data;
+            curl_close($curl);
+            $decode = json_decode($response);
+            $colors = $decode->data;
 
-        foreach($colors as $color){
-            $color_id=$color->id;
-            $name=$color->name;
-            $color_code=$color->color;
+            foreach ($colors as $color) {
+                $color_id = $color->id;
+                $name = $color->name;
+                $color_code = $color->color;
 
-            $insert_colors=DB::insert("CALL import_colors(?,?,?)",array($color_id,$name,$color_code));
-        }
+                $insert_colors = DB::insert("CALL import_colors(?,?,?)", array($color_id, $name, $color_code));
+            }
 
-            $data['status']=200;
-            $data['message']="success";
-            $data['data']=(object) [];
+            $data['status'] = 200;
+            $data['message'] = "success";
+            $data['data'] = (object) [];
 
         }
         return response()->json($data);
-
 
     }
 
