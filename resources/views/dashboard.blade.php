@@ -11,41 +11,45 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
     </script>
     <style>
-        body {
-            margin: 0px;
+      body {
+            margin: 0;
             background-color: white;
         }
 
         .navbar {
-            background-color: #DFABDE;
+            background-color: #1c7299;
             overflow: hidden;
             display: flex;
             justify-content: space-between;
             align-items: end;
         }
 
-        .navbar h3{
+        .navbar h3,
+        .navbar a {
             display: inline;
-        }
-        .navbar a{
-            display: inline;
+            display: inline-block;
+            position: relative;
+            left: 425%;
         }
 
         .logo img {
             width: 60px;
             height: 60px;
-
         }
 
         .user-info {
             text-align: right;
             margin-right: 10px;
         }
-        .user-info img{
-            border-radius:50%;
-            width: 50px;
-            height: 50px:
-        }
+
+        .user-info img {
+            position: relative;
+            width: 53px;
+            height: 60px;
+            top: -14px;
+            right: 61px;
+}
+
 
     </style>
 </head>
@@ -69,7 +73,7 @@
 
         <div class="user-info">
             <h3>{{ $fname }} {{ $lname }}</h3><br>
-            <img src="{{url('images/'.$image)}}" alt="">
+            <img src="{{url('logo/user-interface.png')}}" alt="">
             <a href="{{ url('logout') }}"  class="btn btn-danger">Logout</a>
 
         </div>
@@ -86,6 +90,7 @@
         <tr>
             <th>id</th>
             <th>Image</th>
+            <th>I</th>
             <th>name</th>
             <th>lname</th>
             <th>gender</th>
@@ -98,7 +103,8 @@
         <tr>
             @foreach($users_data as $user)
                 <td>{{ $user->id }}</td>
-                <td><img src="{{ url('images/'.$user->image) }}" alt=""></td>
+                <td><img src="{{ url('images/'.$user->image) }}" alt="" width=30 height=35></td>
+                <td><img src="{{url('images/'.$user->image)}}" alt="" width=30 height=35></td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->lname }}</td>
                 <td>{{ $user->gender }}</td>
