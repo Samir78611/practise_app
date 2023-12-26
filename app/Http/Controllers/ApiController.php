@@ -409,5 +409,72 @@ class ApiController extends Controller
         return response()->json($data);
 
     }
+    public function GetUserDetail(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = "";
+            foreach ($validator->messages()->getMessages() as $field_name => $messages) {
+                //go through each message fot this field
+                foreach ($messages as $message) {
+                    $errors .= $message;
+                    $data['message'] = $errors;
+                }
+            }
+            $data['status'] = 400;
+            $data['data'] = (object) [];
+        } else {
+            //main logic
+            $fname = $request->input('name');
 
+            $final_data = DB::select("CALL get_user_name(?)", array($fname));
+            if ($final_data) {
+                $data['status'] = 200;
+                $data['messages'] = "successfully verified";
+                $data['data'] = $final_data[0];
+            } else {
+                $data['status'] = 400;
+                $data['messages'] = "already used";
+                $data['data'] = (object) [];
+            }
+
+        }
+        return response()->json($data);
+    }
+    public function details_of_car(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'car' => 'required',
+        ]);
+        if ($validator->fails()) {
+            $errors = "";
+            foreach ($validator->messages()->getMessages() as $field_name => $messages) {
+                //go through each message fot this field
+                foreach ($messages as $message) {
+                    $errors .= $message;
+                    $data['message'] = $errors;
+                }
+            }
+            $data['status'] = 400;
+            $data['data'] = (object) [];
+        } else {
+            //main logic
+            //query of car detail
+            $car=$request->input('car');
+            $final_data=DB::select("CALL details_of_car(?)", array($car));
+            if($final_data){
+                $data['status'] = 200;
+                $data['messages'] = "successfully car verified";
+                $data['data'] = $final_data[0];
+            } else {
+                $data['status'] = 400;
+                $data['messages'] = "car not found sry";
+                $data['data'] = (object) [];
+            }
+            
+        }
+        return response()->json($data);
+    }
 }
