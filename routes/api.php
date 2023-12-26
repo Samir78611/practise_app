@@ -27,3 +27,9 @@ Route::post('signup',[ApiController::class,'Signup']);
 Route::post('send-otp',[ApiController::class,'Otp']);
 Route::post('verify-otp',[ApiController::class,'VerifyOtp']);
 Route::post('import_colors',[ApiController::class,'ImportColors']);
+
+//user_name_details
+Route::post('get_user_name',[ApiController::class,'GetUserDetail']);
+
+//car_details
+Route::post('details_of_cars',[ApiController::class,'details_of_car']);

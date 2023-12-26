@@ -62,6 +62,7 @@ Route::post('cars_1', [CarsController::class, 'ListCars']);
 Route::get('edit_cars/{id}', [CarsController::class, 'EditCars']);
 Route::post('update_cars', [CarsController::class, 'UpdateCars']);
 Route::get('delete_cars/{id}', [CarsController::class, 'DeleteCars']);
+Route::get('car_data', [CarsController::class, 'DataCars']);
 
 // google controller
 Route::controller(GoogleController::class)->group(function () {
@@ -71,3 +72,4 @@ Route::controller(GoogleController::class)->group(function () {
 
 Route::get('offer', [OfferController::class, 'OfferUser']);
 Route::post('users_offer', [OfferController::class, 'Offers']);
+

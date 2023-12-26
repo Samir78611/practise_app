@@ -113,6 +113,11 @@ class CarsController extends Controller
             return redirect(url('cars'))->with('fail','Your Car Delete Unsuccessfully');
         }
     }
+    public function DataCars(){
+        if(Auth::check()){
+            return view('car_data');
+        }
+    }
 
     
 }

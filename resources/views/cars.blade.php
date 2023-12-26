@@ -22,7 +22,7 @@
     <h1 style="color:#ff0000">{{Session::get('fail')}}</h1>
     @endif
 
-    <form action="{{url('cars_1')}}" method="POST" enctype="multipart/form-data"> 
+    <form action="{{url('cars_1')}}" method="POST" enctype="multipart/form-data">
         @csrf
         <label for="">Car name:</label>
         <input type="text" id="car" name="car" placeholder="Car name" value="" required ><br>
@@ -66,7 +66,7 @@
             <th>Download Manual</th>
             </tr>
             <tr>
-                
+
         @foreach($cars as $car)
             <td>{{$car->id}}</td>
             <td>{{$car->car}}</td>
@@ -79,7 +79,7 @@
 
             @if($car->image!="")
             <td><img src="{{url('uploads/'.$car->image)}}" alt="" width=250 height=200></td>
-            @else 
+            @else
             @endif
 
             <td>
@@ -90,9 +90,9 @@
                 @endif
             </td>
             </tr>
-        @endforeach 
-        </table>
-
+        @endforeach
+        </table><br>
+        <a href="{{url('car_data')}}">Click Here to view car data>>></a>
     </form>
 </body>
 </html>
