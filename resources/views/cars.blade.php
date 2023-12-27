@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cars Collection</title>
-</head>
+@extends('layouts.admin')
+@section('content')
 <body>
     <h1>Car Collection </h1>
     <hr>
@@ -14,13 +9,6 @@
         @endforeach
     @endif
 
-    @if(Session::has('success'))
-    <h1 style="color:#006600">{{Session::get('success')}}</h1>
-    @endif
-
-    @if(Session::has('fail'))
-    <h1 style="color:#ff0000">{{Session::get('fail')}}</h1>
-    @endif
 
     <form action="{{url('cars_1')}}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -95,4 +83,5 @@
         <a href="{{url('car_data')}}">Click Here to view car data>>></a>
     </form>
 </body>
-</html>
+@stop
+

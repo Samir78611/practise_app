@@ -73,3 +73,7 @@ Route::controller(GoogleController::class)->group(function () {
 Route::get('offer', [OfferController::class, 'OfferUser']);
 Route::post('users_offer', [OfferController::class, 'Offers']);
 
+
+Route::get('home', function () {
+    return view('home');
+});

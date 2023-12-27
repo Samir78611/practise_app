@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogs</title>
-</head>
+@extends('layouts.admin')
+@section('content')
 <body>
     @if($errors->any())
     @foreach($errors->all() as $error)
@@ -56,4 +51,4 @@
         @endforeach
     </form>
 </body>
-</html>
+@stop
